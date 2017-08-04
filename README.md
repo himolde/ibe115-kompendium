@@ -12,7 +12,7 @@ TODO
 
 Kompendiet er skrevet i LaTeX.
 
-Formateringen er basert på malen "The Legrand Orange Book", versjon 2.2 (30/3/17), lastet ned fra https://www.sharelatex.com/templates/books/the-legrand-orange-book Forfattere av malen er Mathias Legrand (legrand.mathias@gmail.com) med endringer av Vel (vel@latextemplates.com).
+Formateringen er basert på malen "The Legrand Orange Book", versjon 2.2 (30/3/17), lastet ned fra https://www.latextemplates.com/template/the-legrand-orange-book Forfattere av malen er Mathias Legrand (legrand.mathias@gmail.com) med endringer av Vel (vel@latextemplates.com).
 
 ### Kompilering
 
