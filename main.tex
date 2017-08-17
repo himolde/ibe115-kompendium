@@ -27,6 +27,11 @@
 \usepackage{gitinfo2}
 \usepackage{ibe115defs} % Commands and environments for this document.
 
+\newcommand{\mytitle}{Linux tjenestedrift}%
+\newcommand{\mysubtitle}{Et kompendium for IBE115 ved Høgskolen i Molde}%
+\newcommand{\mydate}{\gitAuthorDate}%
+\newcommand{\myauthorname}{Hans Fredrik Nordhaug}%
+
 \begin{document}
 
 %----------------------------------------------------------------------------------------
@@ -37,10 +42,15 @@
 \thispagestyle{empty}
 \begin{tikzpicture}[remember picture,overlay]
 \node[inner sep=0pt] (background) at (current page.center) {\includegraphics[width=\paperwidth]{background}};
-\draw (current page.center) node [fill=ocre!30!white,fill opacity=0.6,text opacity=1,inner sep=1cm]{\Huge\centering\bfseries\sffamily\parbox[c][][t]{\paperwidth}{\centering The Search for a Title\\[15pt] % Book title
-{\Large A Profound Subtitle}\\[20pt] % Subtitle
-{\Large \gitAuthorDate}\\[20pt] % Date
-{\huge Dr. John Smith}}}; % Author name
+\draw (current page.center) node [fill=ocre!30!white,fill opacity=0.6,text opacity=1,inner sep=1cm]{%
+\parbox[c][][t]{\paperwidth}{%
+\centering\bfseries\sffamily%
+{\Huge \mytitle}\\[15pt]
+{\Large \mysubtitle}\\[20pt]
+{\huge \myauthorname}\\[15pt]
+{\large \mydate}
+}% end parbox
+};
 \end{tikzpicture}
 \vfill
 \endgroup
@@ -53,9 +63,9 @@
 ~\vfill
 \thispagestyle{empty}
 
-\noindent Copyright \copyright\ 2017 John Smith\\ % Copyright notice
+\noindent Copyright \copyright\ 2017 \myauthorname\\
 
-\noindent \textsc{Release:\gitRels (\gitAuthorDate)}\\ % Dato
+\noindent \textsc{Release:\gitRels (\mydate)}\\
 
 % \noindent \textsc{book-website.com}\\ % URL
 
