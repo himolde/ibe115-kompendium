@@ -17,7 +17,7 @@
 %	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
 %----------------------------------------------------------------------------------------
 
-\documentclass[11pt,fleqn]{book} % Default font size and left-justified equations
+\documentclass[11pt,fleqn,norsk]{book} % Default font size and left-justified equations
 
 %----------------------------------------------------------------------------------------
 
@@ -54,24 +54,24 @@
 %	CONTENT
 %----------------------------------------------------------------------------------------
 
-\part{Part One}
+\part{Del en}
 \include{chapter_01}
 \include{chapter_02}
 
-\part{Part Two}
+\part{Del to}
 \include{chapter_03}
 
 %----------------------------------------------------------------------------------------
 %	BIBLIOGRAPHY
 %----------------------------------------------------------------------------------------
 
-\chapter*{Bibliography}
-\addcontentsline{toc}{chapter}{\textcolor{ocre}{Bibliography}}
-\section*{Books}
-\addcontentsline{toc}{section}{Books}
+\chapter*{\bibname}
+\addcontentsline{toc}{chapter}{\textcolor{ocre}{\bibname}}
+\section*{Bøker}
+\addcontentsline{toc}{section}{Bøker}
 \printbibliography[heading=bibempty,type=book]
-\section*{Articles}
-\addcontentsline{toc}{section}{Articles}
+\section*{Nettsteder}
+\addcontentsline{toc}{section}{Nettsteder}
 \printbibliography[heading=bibempty,type=article]
 
 %----------------------------------------------------------------------------------------
@@ -81,7 +81,7 @@
 \cleardoublepage
 \phantomsection
 \setlength{\columnsep}{0.75cm}
-\addcontentsline{toc}{chapter}{\textcolor{ocre}{Index}}
+\addcontentsline{toc}{chapter}{\textcolor{ocre}{\indexname}}
 \printindex
 
 %----------------------------------------------------------------------------------------
