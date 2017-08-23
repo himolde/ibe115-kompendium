@@ -1,3 +1,57 @@
-\chapterimage{chapter_head_1.pdf} % Chapter heading image
-
 \chapter{Læreboka}
+
+Læreboka er som sagt fra 2003 og mye har endret seg siden da.
+Det har kommet nye teknologier og noen teknologier har død.
+Programvare har kommet i nye versjoner, og hva som er populært 
+har endret seg. I emnet IBE115 har vi tatt inn over oss noen
+av disse endringene, men ikke alle. I tillegg er noe utelatt
+fordi det er vanskelig å gjennomføre i praksis.
+
+\section{Teknologiendringer}
+
+\begin{itemize}
+\item Linux-distribusjonen er endret fra Slackware til Debian
+    \index{Debian}\index{Linux!Debian}. Det betyr at vi skal gjøre
+    en del ting på Debian-måten. Legg også merke til at Debian
+    følger \href{https://en.wikipedia.org/wiki/Filesystem_Hierarchy_Standard}{Filesystem Hierarchy Standard (FHS)}, 
+    men ikke \href{https://en.wikipedia.org/wiki/Linux_Standard_Base}{Linux Standard Base (LSB)}.
+
+    Debian er et naturlig valg siden svært mange bruker Debian 
+    og dens varianter (som inkluderer Ubuntu). Debian i den stabile
+    utgaven er meget godt testet og (som forventet) stabil.
+\item Standard Apache er endret fra 2.2 til 2.4.\\
+    Det påvirker en del sentral konfigurasjon av Apache.\index{Apache}
+\item Filsynkronisering\index{filsynkronisering} er lagt til som tema.
+
+    Vi skal gå gjennom dette som et praktisk eksempel med utgangspunt i 
+    \href{https://nextcloud.com/}{Nextcloud} / \href{https://owncloud.org/}{Owncloud}.
+    Dette er åpne alternativ til Google Drive, Dropbox, OneDrive og iCloud Drive. 
+\end{itemize}
+
+
+\section{Pensumendringer}
+Dette er oppgitt på \href{https://himolde.instructure.com/courses/73}{emnets sider} i 
+\href{https://himolde.instructure.com/}{høgskolens læringsplattform}, 
+men jeg velger å repetere det her med en kort begrunnelse.
+
+Følgende deler av læreboka er utelatt:
+
+\begin{itemize}
+\item Kapittel 2 - om utskriftsmiljøet.\\
+    Vanskelig å gjennomføre i praksis og ofte ikke relevant for dagen bruk av Linux-servere.
+\item kapittel 4.7 - om besøksstatistikk.\\
+    Webalizer er ganske utdatert, og verktøy som analyserer loggfilene er som regel ikke tilfredstillende.
+    Vi skal bruke \href{https://piwik.org/}{Piwik} (som er et åpent alternativ til Google Analytics).
+\item kapittel 7.3-7.5 - eksempler på pop3-tjenere.\\
+    Ingen av de foreslåtte eksemplene, qmail-pop3d og qpopper, fungerer av forskjellige grunner.
+    Vi skal bruke Dovecot dovecot-pop3d.
+\item kapittel 9 - om Usenet news.\\
+    Dette var en fantastisk teknologi som nå er helt død. 
+    Google Groups prøvde å videreføre dette uten at det var noen suksess.
+
+    I dag vil jeg si at \href{https://stackexchange.com/}{Stack Exchange}-nettverket av
+    spørsmål og svar nettsteder har tatt over for news. \href{https://stackoverflow.com/}{Stack Overflow} og
+    \href{https://superuser.com/}{Super User} er kjente eksempler på Stack Overflow-nettsteder.
+\end{itemize}
+
+

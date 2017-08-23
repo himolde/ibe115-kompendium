@@ -1,4 +1,58 @@
-\chapterimage{chapter_head_2.pdf} % Chapter heading image
+\chapter{Linux}\index{Linux} % kommandolinja og sentrale verktøy
 
-\chapter{Linux} % kommandolinja og sentrale verktøy
+Linux er kjernen til operativsystemet som vanligvis går under samme navn. Skal man være
+helt korrekt bør operativsystemet kalles \textbf{GNU/Linux}\index{Linux!GNU/Linux} 
+fordi userland kommer fra \href{https://www.gnu.org/}{GNU-prosjektet}
+som er drevet av \href{https://www.fsf.org/}{Free Software Foundation (FSF)}.
+
+Det viktigste å huske er at hele Linux-operativsystemet (eller GNU/Linux om du vil) er 
+\href{https://en.wikipedia.org/wiki/Free_and_open-source_software}{fri og åpen programvare (FOSS)}.
+Husk at fri og åpen programvare ikke bare betyr at det er gratis, som jo er en stor fordel, men 
+også at du kan endre og tilpasse programvaren. Dette gjør at Linux har fått en voldsom utbredelse
+og brukes i alt fra ordinære servere og nettverksutstyr, 
+\href{https://en.wikipedia.org/wiki/Internet_of_things}{IOT}-utstyr, mobiltelefoner, bilen din, 
+kjøleskapet ditt \dots Linux fungerer også flott som vanlig PC, men det er ikke den vanligste 
+bruken.
+
+GNU/Linux er svært moden programvare. Utviklingen av GNU startet allerede 1983, og første utgave 
+av Linux ble sluppet i 1991 av finnen Linus Torvalds som fortsatt styrer utvikling av Linux.
+Vil du vite mer om Linux, så er 
+\href{https://en.wikipedia.org/wiki/Linux}{Linux-artikkelen på Wikipedia} \cite{wiki:linux}
+en god start.
+
+\section{Administratortilgang}\index{root}\index{sudo}
+
+For å kunne administrere serveren din i dette emnet (og eventuelt seinere i arbeidslivet) 
+trenger du administratortilgang. Superbrukeren på en Linux-server heter \file{root}, og du
+trenger denne kontoen sitt passord for å kunne logge inn. Dette er en stor ulempe hvis flere
+skal administrere serveren - du vet ikke hvem som logget inn og du kan heller ikke endre 
+\file{root}-passordet utenat det påvirker de andre.
+
+Den vanligste løsning på dette problemet er å bruke \prog{sudo} - \textquote{super user do}. 
+Hvis du får sudo-tilgang, så kan du utføre kommandoer som om du var \file{root} uten at du
+trenger å logge inn som \file{root}. \prog{sudo} spør om ditt passord - og husker det en stund
+slik at du slipper å skrive passordet hele tiden. En ekstra fordel med \prog{sudo} er at
+du kan gi en bruker bare delvis administratortilgang. 
+
+Hvis du trenger å være \file{root} over en lengre periode, så kan du bruke 
+
+\cmd[\$]{sudo su -} 
+
+til å bli brukeren \file{root}. Du hopper tilbake til din egen bruker med \prog{exit}.
+Faren ved å være \file{root} hele tiden, er at du kan gjøre stor skade uten at du er klar over
+det. Skriver du alltid sudo så blir du litt oppmerksom på at du har superkrefter.
+
+\begin{remark}
+Jeg har droppet sudo fra kommandolinje-eksemplene i dette kompendiet. Jeg bruker altså
+
+\cmd{service apache2 reload}
+
+istedenfor
+
+\cmd[\$]{sudo service apache2 reload}
+
+Dette er selvfølgelig bare latskap. Legg også merke til at kommandolinja starter 
+med \# når jeg er \file{root} og \$ når jeg er en ordinære bruker. 
+Du kan sjekke hvem du er med \prog{whoami} ...
+\end{remark}
 

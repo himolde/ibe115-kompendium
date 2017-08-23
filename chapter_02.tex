@@ -1,1 +1,72 @@
-\chapter{Programvareinstallasjon}
+\chapter{Programvareinstallasjon}\index{pakkebehandling}
+
+En av de største fordelene med Linux og andre FOSS operativsystem er at de
+har fremragende støtte for installasjon og vedlikehold av programvare. 
+All installasjon av programvare gjøres med såkalte pakkebehandlere. Man laster ikke
+ned programvare direkte fra (hundrevis av) nettsteder med de farene det medfører.
+All programvare er ferdig pakket og blir hentet fra et sentralt arkiv. 
+
+En videre diskusjon om fordelene med pakkebehandlersystem er utelatt. Jeg har heller 
+ikke tatt med informasjon om manuell kompilering (bygging) og installasjon av programvare,
+og de åpenbare problemene med dette. (Læreboka har noen eksempler på kompilering med
+klassikske verktøy som \prog{configure} og \prog{make}.)
+
+Det fins flere forskjellige pakkebehandlersystem for Linux hvor kanskje dpkg og 
+RPM er de mest kjente. Disse systemene kan benyttes via forskjellige pakkebehandlere
+hvor APT er vanligst for dpkg og kanskje YUM er mest kjent for RPM. (Som vanlig med 
+Linux er det utrolig mange forskjellige muligheter.)
+
+Siden vi bruker Debian, så skal vi altså bruke APT\index{APT}. 
+Du kan bruke APT via kommandoene \prog{apt}\index{APT!apt},
+\prog{apt-get}\index{APT!apt-get} (med vennen \prog{apt-cache}) 
+eller \prog{aptitude}\index{APT!aptitude}. Det bør nevnes at 
+\prog{aptitude} også er et nesten grafisk (såkalt ncurses-basert) grensesnitt til APT.
+I kurset vil jeg bruke \prog{apt} når jeg ikke glemmer meg og bruker \prog{apt-get}.
+Jeg håper vi slipper å bruke \prog{dpkg}-kommandoene som er på et lavere nivå - mindre 
+brukervennlig og større sjanse for å ødelegge.
+
+Dette kompendiet vil ikke gi noen introduksjon til APT utover noen få eksempler nedenfor.
+For mer informasjon om bruken av APT les for eksempel kapittel 6.2 i 
+\href{https://debian-handbook.info/browse/stable/}{The Debian Administrator's Handbook} eller 
+kapittel 2 i 
+\href{https://www.debian.org/doc/manuals/debian-reference/}{Debian Reference} eller 
+\href{https://www.debian.org/doc/manuals/refcard/refcard}{Debian sitt referansekort} som 
+er veldig kortfattet og beregnet for å skrives ut tosidig på ett A4-ark).
+
+\section{Noen eksempler for APT}\index{APT!apt}
+
+Oppdatere pakkearkivet slik at nye pakker og oppdateringer/nye utgaver blir tilgjengelig:
+
+\cmd{apt update}
+
+Oppgradere alle programmer/pakker du har installert:
+
+\cmd{apt upgrade}
+
+Installere et program/en pakke (med alle avhengigheter):
+
+\cmd{apt install pakkenavn}
+
+Fjerne et program:
+
+\cmd{apt remove pakkenavn} 
+
+eller 
+
+\cmd{apt purge pakkenavn}
+
+om du også vil fjerne konfigurasjonen for pakken.
+
+\section{\prog{apt} VS \prog{apt-get}}
+
+Sitat fra man-siden til \prog{apt}:
+
+\begin{quote}
+apt provides a high-level commandline interface for the package management system. 
+It is intended as an end user interface and enables some options better suited for 
+interactive usage by default compared to more specialized APT tools like 
+apt-get(8) and apt-cache(8).
+\end{quote}
+
+Med andre ord; \prog{apt} er supert for interaktiv bruk. For skripting bruker man
+fortsatt \prog{apt-get}.\index{APT!skripting}
