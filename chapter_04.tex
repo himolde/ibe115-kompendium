@@ -1,1 +1,83 @@
-\chapter{Apache / HTTP / Web}  % kapt 4
+\chapter{Apache / HTTP / Web}\index{Apache}  % kapt 4
+
+Dokumentasjonen for siste/gjeldende utgave av Apache finner
+du alltid på\\ \url{http://httpd.apache.org/docs/current/}
+
+I dette kapitlet vil vi vise til diverse informasjon for 
+utgave 2.4 og dermed istedenfor lenke til\\
+\url{http://httpd.apache.org/docs/2.4/} \cite{docs:apache}
+
+\section{Installasjon}
+
+Som vanlig installerer man (Apache) med \prog{apt}
+
+\cmd{apt install apache2}
+
+Jada, det funger fortsatt/også med \prog{apt-get} hvis du er vant til det.
+
+Hvis du har lyst til å leke litt med PHP (og seinere installere Wordpress
+eller et annet PHP-basert CMS), så kan du installere PHP-støtte i Apache med
+
+\cmd{apt install libapache2-mod-php}\index{PHP}
+
+Dette legger til en PHP-modul i Apache som er den vanligste måten å kjøre PHP på.
+
+Et annet alternativ som er ganske vanlig hos en del hostingselskaper 
+er FastCGI-modulen sammen med PHP-FPM.
+
+\section{Konfigurasjon}
+
+Som tidligere påpekt bruker læreboka Apache 2.2, mens vi skal bruke Apache 2.4. 
+Dette er standardvalget i Debian og gjeldene utgave for Apache. Før vi tar
+noen spesifikke detaljer, merk at:
+
+\begin{remark}
+Læreboka snakker om \file{httpd.conf}\index{httpd.conf} som Apache sin konfigurasjonsfil. 
+Den samme fila heter \file{apache2.conf}\index{apache2.conf} i Debian og ligger selvfølgelig i 
+mappa \file{/etc/apache2/}. Før du starter med denne oppgaven bør du lese starten 
+av \file{apache2.conf} (på din server) - bruk less. Du vil da skjønne at 
+fila \file{apache2.conf} er satt sammen av flere filer. Dette er istedenfor at 
+all konfigurasjon er samlet i en \textquote{gigantisk} fil.
+\end{remark}
+
+\subsection{Overgang fra 2.2 til 2.4}
+
+Dette er godt beskrevet i dokumentet
+\href{http://httpd.apache.org/docs/2.4/upgrading.html}{Upgrading to 2.4 from 2.2}.
+Du må lese om \textquote{Access control} som viser hvordan man setter opp
+tilgangskontroll i Apache 2.4. Dette er altså en korreksjon til kapittel 4.8 
+i lærebok. I svært korte trekk kan man si at \config{Order}, \config{Allow} og \config{Deny}
+er byttet ut med \config{Require}\index{Apache!direktiver!Require}\index{Require|see{Apache, direktiver}}.
+
+\subsection{Direktiver}
+
+Apache blir styrt gjennom såkalte direktiver i konfigurasjonsfilene. Alle direktivene 
+er godt dokumentert, med eksempler, i Apache sin dokumentasjon - se
+\href{http://httpd.apache.org/docs/2.4/mod/quickreference.html}{Directive Quick Reference}.
+Etterhvert som man vet omtrent hva direktivene heter, så trenger man ikke mer
+enn denne oversikten. 
+
+Den kanskje kraftigste funksjonaliteten til Apache finner man i modulen Rewrite.
+\index{Apache!moduler!Rewrite}\index{Rewrite|see{Apache, moduler}}\index{mod\_rewrite|see{Apache, moduler}}
+Denne blir ikke omtalt i læreboka, men dere kan lese om dette i håndboken
+\href{http://httpd.apache.org/docs/2.4/rewrite/}{URL Rewriting with mod\_rewrite}.
+
+En annen nyttig modul er UserDir som lar deg sette opp hjemmesider for hver enkelt
+bruker på serverene. Dere kan lese mer om UserDir i howto-en
+\href{http://httpd.apache.org/docs/2.4/howto/public\_html.html}{Per-user web directories}.
+\index{Apache!direktiver!UserDir}\index{Apache!moduler!UserDir}
+\index{UserDir|see{Apache, Moduler}}\index{mod\_userdir|see{Apache, moduler}}
+
+\section{Trafikkanalyse}\index{trafikkanalyse}\index{logganalyse}
+
+Når man driver et nettsted er det viktig å vite så mye som mulig om de besøkende.
+Tidligere ble dette gjort ved å se på loggfilene til webserveren (Apache). Kjente 
+programmer for dette er Webalizer og AWStats.\index{Webalizer}\index{AWStats}
+
+Moderne analyseverktøy baserer seg på sporing på klientsiden (i nettleseren) ved
+hjelp av JavaScript. Den meste kjente løsningen er Google Analytics. Hvis du 
+ønsker å ha fullkontroll over dataene dine eller lovgivning sier at du ikke kan bruke 
+en tredjepart til å samle inn data, så er løsningen Piwik.\index{Piwik}
+Jeg anbefaler at dere tester det ut hvis dere får tid. 
+(Piwik fins for tiden dessverre ikke som en offisiell Debian-pakke.)
+
