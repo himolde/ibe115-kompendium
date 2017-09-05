@@ -20,6 +20,39 @@ Vil du vite mer om Linux, så er
 \href{https://en.wikipedia.org/wiki/Linux}{Linux-artikkelen på Wikipedia} \cite{wiki:linux}
 en god start.
 
+\section{Kontrollere tjenester}
+
+Alle tjenestene vi skal installere i kurset må vi kontrollere - starte, stoppe, starte på nytt,
+laste inn oppdatert konfigurasjon og sjekke statusen på. Vi skal i det følgende bruke 
+tjenesten \prog{apache2} som et eksempel. (\prog{apache2} er selvfølgelig Apache-webserveren).
+
+\begin{remark}
+Alle disse kontrollkommandoen må du utføre som \file{root}. 
+Se neste avsnitt om administratortilgang.
+\end{remark}
+
+Mange tjenester kommer med sine egen kontrollkommando - f.eks. \prog{apachectl} for Apache.
+Problemet med å bruke disse er at du må huske hva de heter.
+
+Tidligere skulle man bruke de såkalte init.d-scriptene - f.eks. \prog{/etc/init.d/apache2}.
+Ulempene med disse er at det eksisterer flere init-system og noen av dem bruker ikke
+init.d-scriptene. 
+
+Debian sitt nåværende standard init-system, Systemd, bruker \prog{systemctl} for å kontrollere tjenester.
+Den åpenbare ulempen er at systemer som ikke bruker Systemd, ikke har denne kommandoen.
+
+Løsningen er å bruker kommandoen \prog{service} som virker uansett. Syntaksen er enkel:
+
+\cmd{service TJENESTENAVN KOMMANDO}
+
+Med \prog{apache2} som et eksempel har du følgende selvforklarende eksempler:
+
+\cmd{service apache2 start}\\
+\cmd{service apache2 stop}\\
+\cmd{service apache2 restart}\\
+\cmd{service apache2 reload}\\
+\cmd{service apache2 status}
+
 \section{Administratortilgang}\index{root}\index{sudo}
 
 For å kunne administrere serveren din i dette emnet (og eventuelt seinere i arbeidslivet) 
