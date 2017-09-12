@@ -1,1 +1,74 @@
-\chapter{Samba / SMB / Fildeling} % kapt 3
+\chapter{Samba}\index{Samba} % kapt 3
+
+
+\section{Installasjon}
+
+Læreboka installerer Samba fra kildekode, ikke fra binærpakke eller
+med pakkeprogram som jeg sier i dette kompendiet. Grunnen til dette 
+var nok at Samba var i stor utvikling da boken ble skrevet, og det var
+viktig å ha en så ny utgave som mulig. Vi skal altså se bortifra alle 
+referanser til \file{/usr/local/samba}.
+
+Som vanlig installerer man Samba med \prog{apt}
+
+\cmd{apt install samba}
+
+Jada, det funger fortsatt/også med \prog{apt-get} hvis du er vant til det.
+(Jeg dropper denne setningen i neste kapittel.)
+
+Hvis du trenger å teste tilkobling til Samba enkleste mulig, uten å rote 
+med en annen maskin, så bruker du \prog{smbclient}. Du installerer med
+
+\cmd{apt install smbclient}\index{Samba!smbclient}\index{smbclient|see{Samba}}
+
+
+\section{Dokumentasjon}
+
+Den mest oppdaterte dokumentasjonen for Samba finner
+du alltid på \url{https://wiki.samba.org/} 
+
+Hvis du vet omtrent hva du leter etter, så er det i mine øyne
+enklere og bedre, å lese man-siden for \file{smb.conf}. 
+
+Debian kommer med Samba 4 (versjon 4.5.8 per 12.09.2017), men heldigvis er ikke 
+endringene så store fra Samba 3. Dermed kan du fortsatt lese
+\href{https://www.samba.org/samba/docs/man/Samba3-HOWTO/}%
+{The Official Samba 3.5.x HOWTO and Reference Guide}.
+
+
+\section{Konfigurasjon}
+
+Læreboka er stort sett korrekt for Samba, men noen få ting er det verdt å merke seg.
+
+For det først skal dere ikke bruke \prog{/usr/local/samba/bin/smbpasswd} når dere 
+skal sette passord for Samba-brukere. Kommandoen er \prog{smbpasswd} - uten absolutt 
+sti som vanlig. \index{Samba!smbpasswd}\index{smbpasswd|see{Samba}}
+Dere husker at vi ikke har installert fra kilde, ikke sant? 
+
+Følgende små endringer i forhold i læreboka:
+
+\begin{itemize}
+    \item Ikke oppgi \config{smb passwd file}. Stien til passordfilen er allerede 
+        korrekt kompilert inn i Samba. (Filen er \file{/var/lib/samba/private/passdb.tdb}.)
+        Hvis dere ønsker å se brukerne som er i filen, bruk \cmd{pdbedit -L}.
+        \index{Samba!pdbedit}\index{pdbedit|see{Samba}}
+    \item Hvis dere vil koble til fra Windows, så må dere kanskje legge til
+        \config{ntlm auth = yes}. Grunnen til dette er at Windows som standard ikke
+        bruker NTLMv2 som er nyere/sikrere. (Istedenfor å aktivere NTML, så kan dere
+        endre sikkerhetspolicy for deres PC, men det er mer komplisert.)
+        Samba 4 har byttet til NTLMv2 som standard.
+    \item Samba 4 har introdusert \config{server role}. Jeg anbefaler at dere bruker denne
+        istedenfor \config{security}.
+\end{itemize}
+
+NB1! Husk å test/sjekke konfigurasjonen etter at du har endret den ved hjelp av \prog{testparm}.
+
+NB2! Husk at konfigurasjonen må leses inn på nytt etter at du har endret \file{smb.conf}:
+
+\cmd{service smbd reload}
+
+PS! Det er lov å bruke 
+
+\cmd{systemctl reload smbd.service}
+
+men jeg kommer altså til å bruke \prog{service} som jeg skrev i kapittel 1.
