@@ -1,1 +1,152 @@
-\chapter{Qmail} % kapt 5
+\chapter{Qmail}\index{Qmail} % kapt 5
+
+Før du leser dette kapitlet så er det lurt å ha sett eller i det minst bland gjennom
+forelesningen om Qmail. Jeg gjentar ikke alt som står forelesningen her.
+
+I læreboka kapittel 5.10.2-5.10.9 omtales (manuell) installasjon og konfigurering av 
+\prog{qmail}, \prog{daemontools} og \prog{ucspi-tcp}. Dette kan dere se helt bortifra.
+Vi skal selvfølgelig bruke Apt.
+
+Testing av Qmail, som utføres i 5.10.6, er gjengitt her i kompendiet. Jeg anbefaler
+at disse testene utføres. Jeg anbefaler også at dere tester å \textquote{snakke}
+SMTP ved hjelp av \prog{telnet} - se 5.10.9 i læreboka eller opptak fra forelesning.
+
+Ellers kan \href{http://www.lifewithqmail.org/lwq.html}{Life with Qmail} være en god ressurs
+for å lære om Qmail (hvis man ikke har læreboka).
+
+\begin{remark}
+Aliaser og alias-brukerens spesielle roller blir omtalt i neste kapittel.
+\end{remark}
+
+
+\section{Installasjon}
+
+På grunn av en (fersk) feil i pakken \prog{qmail-run} så må vi installere Daemontools 
+først:
+
+\cmd{apt install daemontools-run}
+
+Etterpå kan du installere Qmail. Vi installerer pakken \prog{qmail-run} slik at 
+Qmail automatisk bruker Daemontools.
+
+\cmd{apt install qmail-run}
+
+Etter dette kjører Qmail - din server kan sende og motta epost. Du kan ikke bruke 
+den vanlige \prog{service}-kommandoen for Qmail siden den er kontrollert av 
+Daemontools. I tillegg til Daemontools-kommandoene så fins det \prog{qmailctl}.
+Hvis du lurer på om Qmail faktisk kjører, bruk
+
+\cmd{qmailctl stat}\index{qmailctl|see{Qmail}}\index{Qmail!qmailctl}
+
+Hvis du skal lese epost lokalt på serveren, så anbefaler jeg programmet \prog{mutt}. 
+Dette minner ikke mye om Outlook eller G-mail, men du klarer nok å lese og sende epost.
+Du installerer det som vanlig med
+
+\cmd{apt install mutt}
+
+\section{Konfigurasjon}
+
+\subsection{Daemontools}\index{Daemontools}
+
+\begin{remark}
+Service-mappa i Debian er \file{/etc/service} i motsetning til
+læreboka som bruker \file{/service}. Prøv å huske det ...
+\end{remark}
+
+Daemontools er en samling verktøy for å administrere tjenester (services).
+I motsetning til Systemd, så overvåker Daemontools tjenestene og starter 
+dem på nytt hvis de dør. Dette er meget praktisk.
+
+For å administrere en tjeneste oppretter man en mappe i \file{/etc/service}
+som inneholder en fil \file{run} som starter tjenesten. Resten er automagisk.
+
+Pakken \prog{qmail-run} oppretter \file{/etc/service/qmail-smtpd} (og to andre mapper)
+som gjør at Qmail blir kontrollert Daemontools.
+
+Daemontools har egentlig bare to kommandoer - \prog{svstat} som gir status for en tjeneste
+og \prog{svc} som kontrollerer tjenesten.
+\index{svstat|see{Daemontools}}\index{Daemontools!svstat}
+\index{svc|see{Daemontools}}\index{Daemontools!svc}
+
+Med \prog{qmail-smtpd} som et eksempel har du følgende nesten selvforklarende eksempler:
+
+\cmd{svstat /etc/service/qmail-smtpd}\\
+\cmd{svc -u /etc/service/qmail-smtpd}\\
+\cmd{svc -p /etc/service/qmail-smtpd}
+
+Hvis du lurer på hva de to siste eksemplene gjør, les man-siden:
+
+\cmd[\$]{man svc}
+
+\subsection{Kontrollfiler}
+
+Alle datafilene til Qmail ligger i \file{/var/lib/qmail/}. Legg merke til 
+at hjemmeområdet til \file{alias}-brukeren er i samme mappe - \file{/var/lib/qmail/alias/}.
+
+Kontrollfilene er tilgjengelig i \file{/etc/qmail}. (\file{/var/lib/qmail/control} er en symbolsk
+lenke til \file{/etc/qmail}.) 
+
+De viktigste filene er \file{me}, \file{locals} og \file{rcpthosts}. Du finner informasjon 
+om kontrollfilene i man-sidene for \prog{qmail-smtpd} og \prog{qmail-inject}. For en komplettliste
+av kontrollfiler kjør:
+
+\cmd[\$]{man qmail-control}
+
+\section{Testing}
+
+I de følgende testene/eksemplene skal du bytte ut \file{minbruker} med ditt brukernavn.
+Målet med testene er å skjønne hvordan Qmail fungerer. Du sender selvfølgelig vanligvis
+epost via en MUA/epostklient (som \prog{mutt}) - ikke via \prog{qmail}-kommandoer.
+
+\begin{remark}
+Standard innboks for en bruker i Debian er \file{/var/mail/brukernavn} i motsetning
+til læreboka som bruker \file{/home/brukernavn/Mailbox}.
+
+\end{remark}
+
+Loggfilen for alle testene er \file{/var/log/qmail/current}. Hvis du ønsker å se filen
+med forståelig tidsstempel, bruk
+
+\cmd{cat /var/log/qmail/current | tai64nlocal}
+
+Ofte ønsker du bare å se de f.eks. 7 siste linjene i loggfilen:
+
+\cmd{cat /var/log/qmail/current | tail -n 7 | tai64nlocal}
+
+NB! Loggfilen for innkommende (ekstern) epost er \file{/var/log/qmail/smtpd/current}
+
+\subsection*{Testmelding til lokal adresse}
+
+Sender en melding som kun har et \textquote{to}-felt og ingen kropp.
+
+\cmd[\$]{echo \textquotedbl{}to: minbruker\textquotedbl{} | qmail-inject}
+
+Sjekk loggen og brukerens innboks (enten med \prog{nano} eller \prog{mutt}).
+
+\subsection*{Testmelding til ukjent lokal adresse}
+
+\cmd[\$]{echo \textquotedbl{}to: brukersomikkefins\textquotedbl{} | qmail-inject}
+
+Sjekk loggen og brukerens innboks (enten med \prog{nano} eller \prog{mutt}).
+Legg merke til Bounce-meldingen siden adressen ikke fantes.
+
+\subsection*{Testmelding til postmaster}
+
+\cmd[\$]{echo \textquotedbl{}to: postmaster\textquotedbl{} | qmail-inject}
+
+Sjekk loggen. Hvor havner eposten?
+
+\subsection*{Testmelding til ekstern adresse}
+
+Bruk din vanlige epostadresse i denne testen.
+
+\cmd[\$]{echo \textquotedbl{}to: deg@etellerannetdomene\textquotedbl{} | qmail-inject}
+
+Sjekk loggen.
+
+\subsection*{Testmelding til ukjent avsender og ukjent mottaker}
+
+\cmd[\$]{echo \textquotedbl{}to: ukjentmottaker\textquotedbl{} | qmail-inject -f ukjentavsender}
+
+Sjekk loggen. Legg merke til dobbel Bounce-meldingen siden også avsenderadressen 
+ikke fantes.
