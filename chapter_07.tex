@@ -1,1 +1,81 @@
 \chapter{ezmlm} % kapt 6
+
+\section{Installasjon}
+
+Hvis du går rett på sak, så forteller
+
+\cmd{apt install ezmlm}
+
+deg at det ikke fins en pakke \textquote{ezmlm}. Hvis du prøver å søke
+etter en pakke som heter noe med \textquote{ezmlm}, så finner du heller ikke noe relevant:
+
+\cmd{apt search ezmlm}
+
+Du bør nå sjekke hele Debian sitt pakkearkiv i nettleseren. Bruk
+\url{https://packages.debian.org/pakkenavn}
+eller i dette tilfellet \url{https://packages.debian.org/ezmlm} 
+
+Du ser at det fins en pakke \file{ezmlm-idx} men at den ikke er tilgjengelig 
+for den stabile utgaven av Debian som vi bruker. Du kan sjekke hvilken utgave 
+av Debian du henter pakker fra, ved å se i filen \file{/etc/apt/sources.list}. 
+(Den nåværende stabile utgaven av Debian heter \textquote{stretch}.)
+\index{APT!sources.list}
+
+For installere \file{ezmlm-idx} så kan vi enten finne .deb-filen via søket på
+\url{https://packages.debian.org/} og installere .deb-filen manuelt, 
+eller oppdatere \file{sources.list} med experimental-utgaven. Vi går for det siste.
+
+På slutten av \file{/etc/apt/sources.list} legg til
+
+\begin{filedata}
+# To enable install of ezmlm and other packages (from experimental)
+deb http://ftp.uio.no/debian/ experimental main
+deb-src http://ftp.uio.no/debian/ experimental main
+\end{filedata}
+
+Etterpå oppdaterer du indeksen til Apt og installerer som vanlig.
+
+\begin{remark}
+Å legge til flere utgaver i \file{/etc/apt/sources.list} er potensielt farlig siden
+du ikke lenger har kontroll med hvilken utgave av Debian pakkene hentes fra.
+Les mer om dette i 
+\href{https://debian-handbook.info/browse/stable/sect.apt-get.html\#sect.apt-upgrade}%
+{The Debian Administrator's Handbook} (etter den grå boksen
+\textquote{Incremental upgrade}).
+\end{remark}
+
+\iffalse
+
+\subsection{Manuell installasjon av ezmlm}
+
+For å finne filen gikk jeg til \url{https://packages.debian.org/ezmlm-idx} og havnet
+til slutt på \url{https://packages.debian.org/experimental/i386/ezmlm-idx/download}. 
+Selve installasjonen blir da:
+
+\cmd{wget http://ftp.no.debian.org/debian/pool/main/e/ezmlm-idx/ezmlm-idx_7.1.1-1~exp0+b1_i386.deb}
+\cmd{dpkg -i ezmlm-idx_7.1.1-1~exp0+b1_i386.deb}
+
+\fi
+
+
+\section{Konfigurasjon}
+\index{ezmlm-make}
+
+Du oppretter en liste med \prog{ezmlm-make}. Hvis du oppretter en liste for 
+alias-brukeren, så blir det en sentral liste. Listeadressen kan f.eks. 
+være \url{hvasomhelst@lpcXXX.himolde.no}. For å opprette slike 
+lister må du være \file{root}. Hvis en vanlig bruker skal opprette en liste, 
+så blir den knyttet til brukernavnet via alias-mekanismen og listeadressen blir 
+\url{brukenavn-hvasomhelst@lpcXXX.himolde.no}.
+
+\begin{remark}
+For å unngå problemer med rettigheter/eier når du oppretter en sentral
+liste er det lurt å passe på at du er alias-brukeren f.eks. med sudo:
+
+\cmd{sudo -u alias ezmlm-make \textasciitilde{}alias/mappe [...]}
+\end{remark}
+
+Man vedlikeholder lister med de forskjellig \prog{ezmlm-CMD}-programmene - 
+f.eks. \prog{ezmlm-sub}, \prog{ezmlm-unsub}.
+Mange av disse oppgavene kan også utføres ved å sende en epost til
+en spesiell adresse.
