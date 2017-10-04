@@ -1,1 +1,50 @@
 \chapter{Dovecot} % kapt 7
+
+\section{Installasjon}
+
+Lærebok bruker \prog{qmail-pop3d} og \prog{qpopper}. Dessverre kan 
+ingen av disse brukes.
+
+\begin{itemize}
+\item \prog{qmail-pop3d} kan ikke brukes fordi programmet checkpassword ikke 
+   virker. (Ref kap. 7.3)
+\item \prog{qpopper} kan ikke brukes fordi det ikke lenger vedlikeholdes og 
+   det er heller ikke tilgjengelig for Debian. (Ref kap. 7.5)
+\end{itemize}
+
+Det er mange andre muligheter (som jeg lister opp i forelesningen),
+men jeg tror det er minst arbeid å prøve Dovecot sin POP3. 
+
+\cmd{apt install dovecot-pop3d}
+
+Endre konfigurasjonen for Dovecot slik at det fungerer uten noe problemer.
+Opprett fila \file{/etc/dovecot/local.conf} med følgende to linjer:
+
+\begin{filedata}
+disable_plaintext_auth = no
+mail_access_groups = mail
+\end{filedata}
+
+Få Dovecot til å lese konfigurasjonen på nytt. OK, hvis du lurer
+så er det selvfølgelig
+   
+\cmd{service dovecot reload}
+
+\section{Testing av POP3}
+
+Jeg syns det er lurt at dere prøver POP3 på protokollnivå (med
+telnet) slik som vi gjorde med HTTP og SMTP. Bruk
+
+\cmd[\$]{telnet lpcXYZ.himolde.no pop3}
+
+Denne kommandoen kan du kjøre som deg selv (uten \prog{sudo}).
+Aller best er det hvis du gjør det fra en annen maskin 
+(f.eks ibe101.himolde.no) slik at du er helt sikker på at det virker.
+
+Prøv gjerne fra din egen PC også med f.eks. 
+\href{https://www.mozilla.org/nb-NO/thunderbird/}{Thunderbird}
+
+\begin{remark}
+Siden vi kjører POP3 uten kryptering anbefaler jeg at du 
+legger til en egen testbruker for POP (med \prog{adduser}).
+\end{remark}
