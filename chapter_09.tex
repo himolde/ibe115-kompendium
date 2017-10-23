@@ -1,1 +1,203 @@
 \chapter{Bind, tinydns og dnscache} % kapt 8
+% #################################
+
+\index{Bind}\index{djbdns}
+\index{tinydns|see{djbdns}}\index{djbdns!tinydns}
+\index{dnscache|see{djbdns}}\index{djbdns!dnscache}
+
+Et lite tips: Ikke installer Bind før du har gjort deg ferdig med
+dnscache og tinydns. Bind, hvis du ikke endrer konfigurasjonen, vil
+lytte på alle IP-adresser etter installasjon og komme i konflikt med
+dnscache og tinydns.
+ 
+% ####################
+\section{Installasjon}
+% ####################
+
+Installasjon av Bind fungerer som standard og vil ikke bli omtalt her. 
+Du må bare husk at pakken heter \file{bind9}. Vi skal fokuserer på djbdns nedenfor.
+
+Akkurat som for Ezmlm, så fins det ingen pakke for djbdns i den stabile utgaven av Debian som vi bruker.
+Dessverre fins det ikke lenger noen pakke for andre utgaver av Debian heller. 
+På \url{https://packages.debian.org/djbdns} finner du bare en pakke for arm64-prosessoren. 
+Vi må derfor bruke et skittent triks:
+
+Laste ned pakken fra \url{http://snapshot.debian.org/}
+
+Installasjon av pakker fra \url{http://snapshot.debian.org/} fungerer greit fordi 
+pakken blir registrert av pakkesystemet, og alle avhengigheter blir behandlet som vanlig. 
+Generelt kan man ikke regne med at pakker fra snapshots.debian.org fungerer siden avhengigheter
+kan mangle.
+
+Du finner mulige pakker via \url{http://snapshot.debian.org/package/pakkenavn/}, altså 
+\url{http://snapshot.debian.org/package/djbdns/}. På den siden vil du etterhvert finne riktig
+deb-fil for i386:
+
+\file{http://snapshot.debian.org/archive/debian/20130529T040126Z/pool/main/d/djbdns/djbdns\_1.05-9~exp2\_i386.deb}
+
+Kopier URL-en over og last ned med \prog{wget}. 
+Deretter installerer du manuelt for eksempel med:
+
+\cmd{dpkg -i djbdns\_1.05-9~exp2\_i386.deb}
+
+% ######################################################
+\section{Konfigurasjon av dnscache-conf og tinydns-conf}
+% ######################################################
+
+\index{djbdns!tinydns}
+\index{djbdns!dnscache}
+\index{dnscache-conf|@see{djbdns}}\index{djbdns!dnscache-conf}
+\index{tinydns-conf|@see{djbdns}}\index{djbdns!tinydns-conf}
+
+
+Vi skal konfigurere dnscache og tinydns fra grunnen av - som beskrevet i læreboka (for en gangs skyld).
+Når vi installerte Qmail, slapp vi billig unna. Pakken \file{qmail-run} installerer for eksempel 
+\file{qmail-uids-gids} som oppretter brukere. Vi må gjøre dette selv:
+
+\cmd{useradd -s /bin/false Gdnscache}\\
+\cmd{useradd -s /bin/false Gtinydns}\\
+\cmd{useradd -s /bin/false Gdnslog}
+
+PS! Du kan ikke logge inne som disse brukerne siden de har \prog{/bin/false} som SHELL. 
+
+Siden det ikke fins en \file{djbdns-run} pakke så må vi også opprette run-filer osv. for Daemontools.
+Heldigvis fins det verktøy for dette. Vi må bruke \prog{dnscache-conf} og \prog{tinydns-conf}.
+Det viktigste med disse kommandoene er å benytte riktig IP-adresser.
+
+For å sette opp dnscache som en lokal tjeneste (standard), bruk
+
+\cmd{dnscache-conf Gdnscache Gdnslog /etc/dnscache}
+
+For å sette opp tinydns som en offentlig tjeneste, bruk
+
+\cmd{tinydns-conf Gtinydns Gdnslog /etc/tinydns 158.38.74.XYZ}
+
+Ja, du må bytte ut \textquote{XYZ} med ditt lpc-nummer.
+ 
+For å starte dnscache eller tinydns som en tjeneste, lenker 
+du bare opp disse mappene i \file{/etc/service}.
+Du kan sjekke med \prog{svstat} (etter noen sekunder).
+
+\cmd{ln -s /etc/dnscache /etc/service}\\
+\cmd{svstat /etc/service/dnscache}
+
+\cmd{ln -s /etc/tinydns /etc/service}\\
+\cmd{svstat /etc/service/tinydn}
+
+% ############################################
+\subsection{Legge til ressursdata i tinydns-conf}
+% ############################################
+
+\index{djbdns!tinydns}
+
+Dette er omtalt i lærebok på side 243 og utover. Jeg gjengir i korte trekk her.
+
+For å legge til ressursdata så må du være i mappa \file{/etc/tinydns/root/}.
+Det er i alle fall mye enklere ... Hver gang du har lagt til ressursdata, 
+må du kompilere data-filen slik at tinydns ser endringen. Dette gjør du med 
+
+\cmd{make}
+
+Kanskje du må installere \file{make}-pakken?
+
+For å legge til navnetjenere, NS-oppføringer, bruk:
+
+\cmd{./add-ns lpcXYZ.himolde.no Offentlig-IP}\\
+\cmd{./add-ns lpcXYZ.himolde.no IP-alias}
+
+For å legge til domenenavn, A-oppføringer, bruk:
+
+\cmd{./add-host lpcXYZ.himolde.no Offentlig-IP}
+
+For å legge til et domenenavn til for samme IP (alias), bruk:
+
+\cmd{./add-alias somename.lpcXYZ.himolde.no Offentlig-IP}
+
+Dette gir ikke en vanlig CNAME-oppføring.
+
+Alle disse \file{add}-kommandoene er egentlig bare wrappere rundt
+\prog{tinydns-edit}. Du kan derfor slå opp i man-siden for dette programmet
+hvis du lurer på noe.
+\index{tinydns-edit|@see{djbdns}}\index{djbdns!tinydns-edit}
+
+% #############################
+\section{Konfigurasjon av Bind}
+% #############################
+
+\index{Bind}
+
+Dokumentasjonen til gjeldende utgave av Bind finner du alltid på\\
+\url{https://www.isc.org/downloads/bind/doc/} \cite{docs:bind}\\
+Debian bruker for øyeblikket utgave 9.10 av Bind.
+
+Et klassisk eksempel på sonefile finner du på\\
+\url{http://www.zytrax.com/books/dns/ch6/mydomain.html}\\
+Alle ressursdata for et domene legges inn i sonefila.
+
+\begin{remark}
+Selv om læreboka nevner det, så trenger du altså ikke legge til brukere osv 
+som du gjorde for dnscache og tinydns. Du trenger heller ikke opprette mapper eller noe annet.
+Bind fungerer ut av boksen.
+\end{remark}
+
+Legg spesielt merke til at Bind sin konfigurasjon i Debian ligger i \file{/etc/bind}, 
+ikke \file{/etc/bind9} (som ville vært logisk siden pakken heter \file{bind9}) 
+eller \file{/etc/named}. 
+
+Kommentarene nedenfor er rettet mot arbeidet med den obligatoriske oppgaven
+om DNS. Ikke alt har generell gyldig. Jeg forutsetter også at du har lagt
+til et IP-alias for nettverkskortet ditt, slik at du har to offentlige IP-adresser
+for serveren din. 
+
+Du bør endre \file{/etc/bind/named.conf.options} før du setter i gang.
+For å spare dere litt forvirring bør dere slå av rekursjon og få Bind til å lytte 
+på en annen offentlig IP enn tinydns. Bruk:
+
+\begin{filedata}
+recursion: no;
+listen-on \{ 158.38.74.ZYX; \};
+listen-on-v6 \{ none; \};
+\end{filedata}
+
+Dette er omtalt nederst på side 253 i læreboka. 
+
+En naturlig plassering for sonefilen for ditt domene er 
+\file{/etc/bind/db.lpcXYZ.himolde.no}.  
+Du legger til sonen i fila \file{/etc/bind/named.conf.local}. 
+Du kan se i \file{/etc/bind/named.conf.default-zones} for 
+å lære hvordan du gjør det. Hvis 
+
+\cmd{service bind9 reload}
+
+ikke virker som forventer, stopper og starter du bare tjenesten.
+
+For å feilsøke Bind konfigurasjonen så har du to verktøy: \\ 
+\prog{named-checkconf} og \prog{named-checkzone}.
+\index{named-checkconf|@see{Bind}}\index{Bind!named-checkconf}
+\index{named-checkzone|@see{Bind}}\index{Bind!named-checkzone}
+
+For å sjekke selve konfigurasjonen (utenom sonefilene eller ressursdata om du vil), bruk:
+
+\cmd{named-checkconf} 
+
+For å sjekke en sonefil (og dens ressursdata), bruk:
+
+\cmd{named-checkzone lpcXYZ.himolde.no /etc/bind/db.lpcXYZ.himolde.no}
+
+% ######################################################
+\section{Læreboka og den obligatoriske oppgaven}
+% ######################################################
+
+Når læreboka snakker om \textquote{z.example.com} (første gang på side 243),
+så bytter du det ut med ditt domene - \textquote{lpcXXX.himolde.no}. Det er litt 
+mer naturlig.
+
+Som det står i oppgaveteksten skal Bind ha samme ressursdata som
+tinydns. Du skal altså \textbf{ikke} delegere autoritet for et barnedomene fra
+tinydns til bind - ref 8.5.3 i læreboka.
+
+Hvis du lurer på hvilke tjenester (eller prosesser)
+som lytter på port 53 (DNS), bruk
+
+\cmd{netstat -anp | grep ':53 '}
+
