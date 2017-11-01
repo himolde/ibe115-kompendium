@@ -7,7 +7,7 @@
 
 Du vil gjerne også ha en FTP-klient slik at du kan teste lokalt:
 
-\cmd{aptitude install ftp}
+\cmd{apt install ftp}
 
 \section{Konfigurasjon}
 
@@ -16,7 +16,8 @@ For å teste at det fungerer, bruk
 
 \cmd[\$]{ftp localhost}
 
-og logg inn som din stud-bruker. Hvis du vil teste utenfra, så kan du bruke
+og logg inn som din stud-bruker. (Man kunne brukt \prog{telnet} og snakket 
+FTP-protokollen direkte.) Hvis du vil teste utenfra, så kan du bruke
 FileZilla på din egen laptop. Siden FTP ikke er kryptert, så kan det lønne
 seg å opprette en testbruker, f.eks. \file{ftpbruker}, slik at ingen 
 plukker opp passordet ditt. (Dette er ikke et problem hvis du tester lokalt 
