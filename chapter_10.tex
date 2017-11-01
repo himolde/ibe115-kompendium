@@ -1,1 +1,35 @@
 \chapter{ProFTP} % kapt 10
+\index{ProFTP}\index{ftp}
+
+\section{Installasjon}
+
+\cmd{apt install proftpd}
+
+Du vil gjerne også ha en FTP-klient slik at du kan teste lokalt:
+
+\cmd{aptitude install ftp}
+
+\section{Konfigurasjon}
+
+ProFTP virker ut av boksen. (Tjenesten heter proftpd.) 
+For å teste at det fungerer, bruk
+
+\cmd[\$]{ftp localhost}
+
+og logg inn som din stud-bruker. Hvis du vil teste utenfra, så kan du bruke
+FileZilla på din egen laptop. Siden FTP ikke er kryptert, så kan det lønne
+seg å opprette en testbruker, f.eks. \file{ftpbruker}, slik at ingen 
+plukker opp passordet ditt. (Dette er ikke et problem hvis du tester lokalt 
+mot localhost.)
+
+\index{jail}\index{chroot|see{jail}}
+Det er svært vanlig å \textquote{jaile} brukeren så han ikke kommer utenfor
+sitt eget hjemmeområde. Dette kalles også ofte for \textquote{chroot}. 
+
+Sammenlign resultatet av pwd (i \prog{ftp}) før og etter du har aktivert 
+\config{DefaultRoot} i konfigurasjonsfilen \file{/etc/proftpd/proftpd.conf}. 
+Husk å laste konfigurasjonen til proftpd på nytt. 
+Jeg regner med at dere skjønner at dette gir et ekstra lag av sikkerhet.
+
+Dokumentasjon for alle direktivene finner dere på\\
+\url{http://www.proftpd.org/docs/directives/linked/by-name.html}
