@@ -33,12 +33,12 @@ Du finner mulige pakker via \url{http://snapshot.debian.org/package/pakkenavn/},
 \url{http://snapshot.debian.org/package/djbdns/}. På den siden vil du etterhvert finne riktig
 deb-fil for i386:
 
-\file{http://snapshot.debian.org/archive/debian/20130529T040126Z/pool/main/d/djbdns/djbdns\_1.05-9~exp2\_i386.deb}
+\file{http://snapshot.debian.org/archive/debian/20130529T040126Z/pool/main/d/djbdns/djbdns\_1.05-9\textasciitilde{}exp2\_i386.deb}
 
 Kopier URL-en over og last ned med \prog{wget}. 
 Deretter installerer du manuelt for eksempel med:
 
-\cmd{dpkg -i djbdns\_1.05-9~exp2\_i386.deb}
+\cmd{dpkg -i djbdns\_1.05-9\textasciitilde{}exp2\_i386.deb}
 
 % ############################################
 \section{Konfigurasjon av dnscache og tinydns}
@@ -199,5 +199,5 @@ tinydns til bind - ref 8.5.3 i læreboka.
 Hvis du lurer på hvilke tjenester (eller prosesser)
 som lytter på port 53 (DNS), bruk
 
-\cmd{netstat -anp | grep ':53 '}
+\cmd{netstat -anp | grep \textquotesingle:53 \textquotesingle}
 
