@@ -201,3 +201,45 @@ som lytter på port 53 (DNS), bruk
 
 \cmd{netstat -anp | grep \textquotesingle:53 \textquotesingle}
 
+% ##############################################
+\section{IP-alias og den obligatoriske oppgaven}
+% ##############################################
+
+Læreboka anbefaler at vi oppretter en egen IP-adresse (IP-alias) for tinydns, 
+men det er ikke nødvendig. Vi kan bruke vår offentlige IP siden dnscache kun bruker localhost.
+Derimot trenger vi et IP-alias for Bind slik at det ikke blir konflikt med tinydns.
+For å unngå konflikter med andre på labnettet, så skal du bruke et IP-alias
+som er 60 høyere enn den offentlige IP-adresse. Med andre ord, hvis du 
+har f.eks. 158.38.74.192, så skal IP-aliaset være 158.38.74.252.
+
+Et nettverkskort kan han mange forskjellige IP-adresser på samme inngang. 
+Det er en hovedadresse og resten kaller vi aliaser. 
+Statiske nettverk, uten DHCP, krever at vi konfigurerer 
+serveren i filen \file{/etc/network/interfaces}. 
+
+\index{ifconfig}\index{ip}
+Bruk \prog{ifconfig} eller \prog{ip} for å se på gjeldende, aktive nettverksinnstillinger.
+Dere vil se at nettverkskortet heter \file{ens192}, ikke \file{eth0} som det pleide 
+å hete tidligere. Disse nye navnene gir ekstra informasjon om kortet.
+
+For å opprette et IP-aliaset fra eksemplet over veldig kjapt, kan vi bruke
+
+\cmd{ifconfig ens192:1 158.38.74.252 netmask 255.255.255.128}
+
+Ulempen med å gjøre det kjapt og enkelt er at IP-aliaset forsvinner når maskiner starter
+på nytt. Det er derfor bedre å legge det til i selve konfigurasjonen.
+På slutten av \file{/etc/network/interfaces} legg til
+
+\begin{filedata}
+auto ens192:0
+allow-hotplug ens192:0
+iface ens192:0 inet static
+        address 158.38.74.252
+        netmask 255.255.255.128
+\end{filedata}
+
+for å definere IP-aliaset fra eksemplet over. Du kan aktivere IP-aliaset med
+
+\cmd{ifup ens192:0}
+
+Du skjønner da at det også fins en kommando \prog{ifdown}.
