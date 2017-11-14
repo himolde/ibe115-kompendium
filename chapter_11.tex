@@ -77,7 +77,7 @@ versjonnummeret i kommandoene nedenfor.
 
 \section{Konfigurasjon}
 
-\subsection*{Apache}
+\subsection{Apache}
 
 Opprett \file{/etc/apache2/sites-available/nextcloud.conf} med følgende innhold:
 
@@ -108,7 +108,7 @@ Du må nesten aktivere kryptering også:
 \cmd{a2enmod ssl}\\
 \cmd{a2ensite default-ssl}
 
-\subsection*{MariaDB/MySQL}
+\subsection{MariaDB/MySQL}
 
 Du må opprette en database og en databasebruker for Nextcloud.
 
@@ -128,7 +128,7 @@ Utfør selve SQL-kommandoene:
 
 \cmd{mysql < create\_nextcloud.sql}
 
-\subsection*{Nextcloud}
+\subsection{Nextcloud}
 
 Gjør følgende endringer på filsystemet:
 
@@ -145,7 +145,7 @@ Du bør opprette en vanlig bruker for deg selv, direktelenke:
 
 \url{https://lpc1XY.himolde.no/nextcloud/index.php/settings/users}
 
-\subsection*{Fine URL-er}
+\subsection{Fine URL-er}
 
 Hvis du vil har URL-er uten \textquote{index.php}, så må du legge til
 
