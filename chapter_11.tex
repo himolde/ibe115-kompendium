@@ -1,1 +1,175 @@
-\chapter{Nextcloud / Filsynkronisering}
+\chapter{Nextcloud / Filsynkronisering}\index{Nextcloud}
+\index{synkronisering|see{filsynkronisering}}
+\index{filsynkronisering}
+\index{backup}
+
+Før vi installerer programvare for filsynkronisering så er det viktig
+å ha klart for oss skillet mellom backup og synkronisering.
+
+Filsynkronisering holder dine forskjellige enheter oppdatert slik at
+samme innhold (filer) er tilgjengelig på alle enhetene. Dette har den
+åpenbare fordelen at man f.eks. kan fortsette å arbeide hjemme etter 
+arbeid eller lett se på filene på mobilen. I forhold til å jobbe mot
+en nettverksdisk, så er filsynkronisering overlegent når det kommer
+til ytelse siden du jobber lokalt på enheten, og filene bare 
+synkroniseres (lastes opp) når det oppstår endringer. Ulempen med 
+synkronisering er at det av og til oppstår konflikter fordi du 
+jobber med filene på flere enhet samtidig. 
+
+Mange bruker filsynkronisering som backup, siden filene faktisk er 
+trygt lastet opp til skyen/en server. Det er to problemer med dette.
+For det første så er det ingen lett måte å hente tilbake alle filene
+fra et gitt tidspunkt. Filsynkronisering tilbyr som oftes 
+versjonskontroll (slik at du kan gå tilbake), men denne er per fil og
+kan være begrenset i tid eller antall. For det andre så er det altfor
+lett at \textquote{backupen} blir overskrevet ved f.eks. virusangrep
+fordi synkroniseringen pågår kontinuerlig.
+
+Backup skiller seg fra filsynkronisering ved at man tar en kopi av hele
+disken eller hele mapper på gitte tidspunkt (en gang om dagen f.eks.) 
+og lagrer disse i skyen. Dette gjøres typisk fra hovedenhet, og 
+backupen bør som regel inneholde mappene som du synkroniserer 
+med de andre enhetene. Backup bør også tilbyr muligheten til å gå 
+tilbake i tid, ikke bare til siste backup, for å gjenskape (restore) 
+hele disken slik den var tidligere.
+
+De store kommersielle tilbyderne av filsynkronisering er Dropbox,
+iCloud Drive, OneDrive og Google Drive (som nå også tilbyr backup). 
+Alle disse har begrensede utgaver som de tilbyr gratis til privatpersoner.
+
+Det kan være mange grunner til at man ikke ønsker å benytte seg av 
+disse kommersielle aktørene - regelverk, personvern og ønske om full
+kontroll med egne data. Heldigvis kan man sette opp slike tjenester
+selv. Man vil kanskje ikke få samme ytelse som hos de store aktørene,
+men man har i alle fall full kontroll. Vi skal prøve en av åpen 
+kildekode alternativene, \href{https://nextcloud.com/}{Nextcloud} 
+(som er en variant av \href{https://owncloud.org/}{Owncloud}).   
+
+\section{Installasjon}
+
+Hverken Nextcloud eller Owncloud er tilgjengelig via Debian sitt 
+pakkesystem. Såvidt jeg vet er det fordi det er \textquote{umulig}
+for Debian-pakkevedlikeholderne å tilby vanlig oppgradering 
+mellom versjonene slik det er forventet. Dermed må vi 
+\href{https://docs.nextcloud.com/server/12/admin_manual/installation/source_installation.html}{installere manuelt}, 
+men vi skal ikke kompilere noe. Vi kunne installert
+Nextcloud som en Snap-pakke, men jeg tenker at vi holder oss til
+det vanlige pakkesystemet. Nextcloud krever en såkalt LAMP-stack - 
+Linux, Apache, MySQL/MariaDB og PHP. Vi mangler bare to bokstaver ...
+
+\subsection*{Forhåndskrav}
+
+Nextcloud krever masse PHP-moduler, men følgende kommandoer dekker det meste:
+
+\cmd{apt install mariadb-server libapache2-mod-php7.0}\\
+\cmd{apt install php7.0-gd php7.0-json php7.0-mysql php7.0-curl}\\
+\cmd{apt install php7.0-mbstring php7.0-intl}\\
+\cmd{apt install php7.0-mcrypt php-imagick php7.0-xml php7.0-zip}
+
+\subsection*{Nedlasting}
+
+Siste utgave akkurat nå er 12.0.3. Hvis det kommer nye utgaver, oppdaterer du bare
+versjonnummeret i kommandoene nedenfor.
+
+\cmd{wget https://download.nextcloud.com/server/releases/nextcloud-12.0.3.tar.bz2}\\
+\cmd{tar xf nextcloud-12.0.3.tar.bz2}\\
+\cmd{mv nextcloud /var/www}
+
+\section{Konfigurasjon}
+
+\subsection*{Apache}
+
+Opprett \file{/etc/apache2/sites-available/nextcloud.conf} med følgende innhold:
+
+\begin{filedata}
+Alias /nextcloud "/var/www/nextcloud/"
+
+<Directory /var/www/nextcloud/>
+  Options +FollowSymlinks
+  AllowOverride All
+
+ <IfModule mod_dav.c>
+  Dav off
+ </IfModule>
+
+ SetEnv HOME /var/www/nextcloud
+ SetEnv HTTP_HOME /var/www/nextcloud
+
+</Directory>
+\end{filedata}
+
+Aktiver disse innstillingene og diverse Apache-moduler:
+
+\cmd{a2ensite nextcloud}\\
+\cmd{a2enmod rewrite headers env dir mime}
+
+Du må nesten aktivere kryptering også:
+
+\cmd{a2enmod ssl}\\
+\cmd{a2ensite default-ssl}
+
+\subsection*{MariaDB/MySQL}
+
+Du må opprette en database og en databasebruker for Nextcloud.
+
+Lag en fil \file{create\_nextcloud.sql} som inneholder
+
+\begin{filedata}
+CREATE USER 'username'@'localhost' IDENTIFIED BY 'password';
+CREATE DATABASE IF NOT EXISTS nextcloud;
+GRANT ALL PRIVILEGES ON nextcloud.* TO 
+  'username'@'localhost' IDENTIFIED BY 'password';
+\end{filedata}
+
+Du må gjerne endre \textquote{username} og \textquote{password}. 
+Husk disse og at databasen heter \textquote{nextcloud}.
+
+Utfør selve SQL-kommandoene:
+
+\cmd{mysql < create\_nextcloud.sql}
+
+\subsection*{Nextcloud}
+
+Gjør følgende endringer på filsystemet:
+
+\cmd{cd /var/www/nextcloud}\\
+\cmd{mkdir data}\\
+\cmd{chown -R www-data apps config data}
+
+Du er nå klar til å fullføre konfigurasjon/installasjon av Nextcloud. Gå til
+
+\url{https://lpc1XY.himolde.no/nextcloud/}
+
+Etter at installasjonen er ferdig, så er du automatisk innlogget som admin. 
+Du bør opprette en vanlig bruker for deg selv, direktelenke:
+
+\url{https://lpc1XY.himolde.no/nextcloud/index.php/settings/users}
+
+\subsection*{Fine URL-er}
+
+Hvis du vil har URL-er uten \textquote{index.php}, så må du legge til
+
+\begin{filedata}
+  'htaccess.RewriteBase' => '/nextcloud',
+\end{filedata}
+
+etter overwrite.cli.url-linja i \file{/var/www/nextcloud/config/config.php}.
+
+Deretter må du oppdatere filen \file{/var/www/nextcloud/.htaccess}. Det gjør du lettest slik:
+
+\cmd{cd /var/www/nextcloud/}\\
+\cmd{chown www-data .htaccess}\\
+\cmd{sudo -u www-data php occ maintenance:update:htaccess} 
+
+På grunn av en feil vises ikke lenger ikonene oppe til høyre etter at du har aktiveert
+fine URL-er. For å få dem frem igjen, må du gå til
+
+\url{https://lpc1XY.himolde.no/nextcloud/settings/admin/theming}
+
+og f.eks. endre navnet. Da skal ikonene vises igjen. Du kan endre navn tilbake med en gang.
+
+\section{Bruk}
+
+Nextcloud har klienter for PC/Desktop og mobiltelefoner. Jeg har bare testet Andorid-appen
+som er gratis - og fungerer. Filene blir synkronisert mellom telefonen og nettstedet. Jeg 
+burde selvfølgelig testet på PC-en også, men nå har jeg brukt nok tid ...
