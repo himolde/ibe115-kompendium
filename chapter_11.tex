@@ -115,10 +115,10 @@ Du må opprette en database og en databasebruker for Nextcloud.
 Lag en fil \file{create\_nextcloud.sql} som inneholder
 
 \begin{filedata}
-CREATE USER 'username'@'localhost' IDENTIFIED BY 'password';
+CREATE USER \tqs{}username\tqs{}@\tqs{}localhost\tqs{} IDENTIFIED BY \tqs{}password\tqs{};
 CREATE DATABASE IF NOT EXISTS nextcloud;
 GRANT ALL PRIVILEGES ON nextcloud.* TO 
-  'username'@'localhost' IDENTIFIED BY 'password';
+  \tqs{}username\tqs{}@\tqs{}localhost\tqs{} IDENTIFIED BY \tqs{}password\tqs{};
 \end{filedata}
 
 Du må gjerne endre \textquote{username} og \textquote{password}. 
